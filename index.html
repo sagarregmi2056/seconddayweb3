@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>frontendtometamask</title>
+  
+    <!-- <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script> -->
+    <!-- <script src="./node_modules/web3/dist/web3.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.2/web3.min.js"></script>
+     -->
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+     <script src='node_modules/web3/dist/web3.min.js'></script>
+
+    </head>
+<style>
+    body{
+        color:black;
+        background-color: azure;
+    }
+    button{
+        color:red;
+        background-color: aliceblue;
+        font-size: 33px;
+        font-family: sans-serif;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+    }
+    button:hover{
+        background-color: yellow;
+    }
+    p{
+     color:black;
+     font-size: 20px;
+    }
+</style>
+<body>
+
+    <button onclick="connectTometamask()" >connect to meta mask</button> <br>
+    <p id="addressarea"></p>
+    <br>
+    <br>
+    <button onclick="connectContract()">connect to Contract</button><br>
+    <p id="contractarea"></p>
+    <br>
+    <br>
+    <button onclick="readContract()" > get data fromContract</button><br>
+    <p id="dataarea" ></p>
+    <br>
+    <br>
+    <script>
+        // step1 connecting to meta mask wallet
+        let account;
+        // contract = new web3.eth.Contract(abi, contractAddress);
+        const connectTometamask = async() =>{
+            // this function is going to check the connection using window.ethereum method
+            if(window.ethereum!=="undefined"){
+                // requesting ethereum.request
+                const accounts  = await ethereum.request({method:"eth_requestAccounts"});
+                // first account of metamask(single ) is accessing to frontend
+                account = accounts[0];
+                // showing on frontend
+                document.getElementById("addressarea").innerHTML = "your address is:" +account;
+
+            }
+        }
+        async function loadWeb3() {
+    if (window.ethereum) {
+        window.web3 = new Web3(window.ethereum);
+        window.ethereum.enable();
+    }
+}
+
+async function load() {
+    await loadWeb3();
+    updateStatus('Ready!');
+}
+
+function updateStatus(status) {
+    // const statusEl = document.getElementById('status');
+    // document.getElementById('status').innerHTML = status;
+    console.log(status);
+}
+
+load();
+        async function loadContract () {
+    return await new window.web3.eth.Contract([
+	{
+		"inputs": [],
+		"name": "mycity",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+],"0x3966033a7624517e01246c3CFC3093d98d132510");
+
+
+            
+
+            // the abi is here application binary interface provided by solidity compiler
+            
+            // this is the address from remix ide where we deploy our contract on ganach
+            // the address is the address of our solidity smart contract where we deploy it.
+            // document.getElementById("contractarea").innerHTML = "now you are connected to smart contract";
+           
+}
+
+
+async function connectContract() {
+    await loadWeb3();
+    window.contract = await loadContract();
+    updateStatus('Ready!');
+    document.getElementById("contractarea").innerHTML = "now you are connected to smart contract";
+    alert("you are done now");
+}     //  this is how you create the instances of smart contract
+             
+
+    
+
+        // geting data from the contract 
+
+        // note:this function is not working...
+        const readContract = async()=>{
+            
+            
+            const data = await window.contract.methods.mycity().call();
+            alert("step1");
+            document.getElementById("dataarea").innerHTML = data;
+
+        }
+
+
+    </script>
+</body>
+</html>
